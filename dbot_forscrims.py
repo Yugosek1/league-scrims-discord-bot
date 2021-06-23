@@ -53,19 +53,18 @@ async def on_message(message):
    #    print('!list detected')
    #    return await post_list(message)
 
-   if message.content.startswith('!refresh'):
-      print('!refresh detected')
-      return await post_refresh(message)
+   # if message.content.startswith('!refresh'):
+   #    print('!refresh detected')
+   #    return await post_refresh(message)
  
    # if message.content.startswith("!delall"):
    #    return await delete_allposts(message)
 
 
 async def post_add(message):
-   post_message = message.content.lstrip('!post')
-   post_message = post_message.lstrip()
-   post_message = post_message.split(',')
-   if len(post_message)==5:
+   post_message = re.match(r'^!post (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
+   post_message = post_message.groups()
+   if post_message:
       c.execute('insert into database values(?, ?, ?, ?, ?, ?, ?, ?)',
                   [message.author.id, message.author.name, message.created_at, post_message[0], post_message[1], post_message[2], post_message[3], post_message[4]])
       # on conflict (user_id,teamname) do update set created_datatime'
@@ -99,7 +98,7 @@ async def post_delete(message):
       return await message.channel.send(embed=embed)
       # return await message.channel.send('形式が違います""!delete [登録番号]""')      
 
-async def post_update(message):
+# async def post_update(message):
    post_message = re.findall(r'^!update (\d+) (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
    if post_message:
       print(type(post_message))
@@ -113,6 +112,26 @@ async def post_update(message):
          return await message.channel.send(embed=embed)
       else:
          embed=discord.Embed(title="Error!", description="`"+post_message[0][0]+"`は登録されていません。また更新は登録したユーザーのみ可能です", color=0xff0000)
+         return await message.channel.send(embed=embed)
+   else:
+      embed=discord.Embed(title="Error!", description="形式が違います`!update [post_ID]`", color=0xff0000)
+      return await message.channel.send(embed=embed)
+
+async def post_update(message):
+   post_message = re.match(r'^!update (\d+) (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
+   post_message = post_message.groups()
+   if post_message:
+      # print(type(post_message))
+      # print(post_message)
+      post_nakami = c.execute('SELECT * FROM database WHERE user_id=? and rowid=?',[message.author.id, post_message[0]]).fetchone() 
+
+      if post_nakami:
+         c.execute('UPDATE database SET teamname=?,date_and_time=?,tier_average=?,matches=?,comments=? WHERE user_id=? and rowid=?',[post_message[1],post_message[2],post_message[3],post_message[4],post_message[5],message.author.id, post_message[0]])
+         con.commit()
+         embed=discord.Embed(title="Success!", description=post_message[0]+"の投稿を更新しました", color=0x00ff01)
+         return await message.channel.send(embed=embed)
+      else:
+         embed=discord.Embed(title="Error!", description="`"+post_message[0]+"`は登録されていません。また更新は登録したユーザーのみ可能です", color=0xff0000)
          return await message.channel.send(embed=embed)
    else:
       embed=discord.Embed(title="Error!", description="形式が違います`!update [post_ID]`", color=0xff0000)
@@ -154,7 +173,7 @@ async def post_list():
 
 async def edit_list():
    # mypost = c.execute('SELECT user_id, teamname, date_and_time, tier_average, matches, comments, rowid FROM database WHERE user_id =?',[message.author.id]).fetchall()
-   mypost = c.execute('SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.rowid, tier FROM database join tier_list using(tier_average) order by database.rowid asc limit 10').fetchall()
+   mypost = c.execute('SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.rowid, tier FROM database join tier_list using(tier_average) order by database.rowid asc limit 20').fetchall()
    channel = client.get_channel(854600745550741554)
    # メッセージの取得
    edit_message = await channel.fetch_message(854610120680275988)
@@ -206,7 +225,7 @@ async def post_mylist(message):
       return await message.channel.send(embed=embed)
 
 #今日-1日のレコードより古いレコードを削除　一定間隔で実行するか、各コマンドが呼ばれたときに一緒に実行するか検討
-async def post_refresh(message):
+async def post_refresh():
    c.execute('DELETE from database WHERE date_and_time <= datetime("now", "-1 day", "localtime")')
    con.commit()
    print('deleted old records')
@@ -224,7 +243,9 @@ async def update_posts():
    #投稿パート
    await post_list()
    #editパート
-   return await edit_list()
+   await edit_list()
+   #refreshパート
+   await post_refresh()
    
 @update_posts.before_loop
 async def before_update_posts():
