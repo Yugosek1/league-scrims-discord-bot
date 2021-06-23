@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 db2.db-journal
+
+#index
+settings.json
