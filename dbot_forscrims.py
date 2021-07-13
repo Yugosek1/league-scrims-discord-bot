@@ -3,11 +3,11 @@ from discord import message
 from discord.ext import tasks
 import re
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import psycopg2
 
-#.envファイル読み込み
-load_dotenv()
+# #.envファイル読み込み
+# load_dotenv()
  
 TOKEN = os.environ['TOKEN']
  
