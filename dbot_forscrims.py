@@ -1,10 +1,10 @@
 import discord
 from discord import message
 from discord.ext import tasks
-import sqlite3
 import re
 import os
 from dotenv import load_dotenv
+import psycopg2
 
 #.envファイル読み込み
 load_dotenv()
@@ -16,9 +16,11 @@ client = discord.Client()
 BOSYUCHANNEL_ID = int(os.environ['BOSYUCHANNEL_ID'])
 
 tier = {"アイアン":1, "ブロンズ":2, "シルバー":3, "ゴールド":4, "プラチナ":5, "ダイヤモンド":6, "マスター":7, "グランドマスター":8, "チャレンジャー":9}
- 
-con = sqlite3.connect('db2.db')
-c = con.cursor()
+
+DATABASE_URL = os.environ['DATABASE_URL']
+
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+c = conc.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS database(
          user_id INTEGER,
          user_name STRING,
