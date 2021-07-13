@@ -19,8 +19,8 @@ tier = {"アイアン":1, "ブロンズ":2, "シルバー":3, "ゴールド":4, 
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-c = conc.cursor()
+con = psycopg2.connect(DATABASE_URL, sslmode='require')
+c = con.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS database(
          user_id INTEGER,
          user_name STRING,
