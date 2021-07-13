@@ -14,6 +14,8 @@ TOKEN = os.environ['TOKEN']
 client = discord.Client()
 
 BOSYUCHANNEL_ID = int(os.environ['BOSYUCHANNEL_ID'])
+
+tier = {"アイアン":1, "ブロンズ":2, "シルバー":3, "ゴールド":4, "プラチナ":5, "ダイヤモンド":6, "マスター":7, "グランドマスター":8, "チャレンジャー":9}
  
 con = sqlite3.connect('db2.db')
 c = con.cursor()
@@ -239,13 +241,14 @@ async def post_mylist(message):
       return await message.channel.send(embed=embed)
 
 async def search_by_tier(message):
-   post_message = re.match(r'^!search (.{,8})$',message.content)
-   post_message = post_message.groups()
-   if post_message:
+   msg1 = re.findall(r'^!search ([^ 　]+)$',message.content)
+   msg2 = re.findall(r'^!search (\d) +(\d)$',message.content)
+   msg3 = re.findall(r'^!search ([^ 　]+) +([^ 　]+)$',message.content)
+   if msg1:
       result = c.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.rowid, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average =? or tier =?)order by date_and_time asc limit 20'''
-               ,[post_message[0],post_message[0]]).fetchall()
+               ,[msg1[0],msg1[0]]).fetchall()
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
          embed1.add_field(name=str(i+1)+".", value=
@@ -254,6 +257,39 @@ async def search_by_tier(message):
          f'`連絡先`: <@{result[i][0]}>`post_ID`:{result[i][6]}'
          , inline=False)
       await message.channel.send(embed=embed1)
+   if msg2:
+      print(msg2[0][0],msg2[0][1])
+      result = c.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.rowid, tier 
+               FROM database join tier_list using(tier_average)
+               WHERE (tier_average BETWEEN ? AND ?)order by date_and_time asc limit 20'''
+               ,[msg2[0][0],msg2[0][1]]).fetchall()
+      embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
+      for i in range(len(result)):
+         embed1.add_field(name=str(i+1)+".", value=
+         f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2]}`平均レート`: {result[i][7]}\n'
+         f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
+         f'`連絡先`: <@{result[i][0]}>`post_ID`:{result[i][6]}'
+         , inline=False)
+      await message.channel.send(embed=embed1)
+   if msg3:
+      msg3_1 = str(msg3[0][0])
+      msg3_2 = str(msg3[0][1])
+      msg3_1 = tier[msg3_1]
+      msg3_2 = tier[msg3_2]
+      print(msg3_1,msg3_2)
+      result = c.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.rowid, tier 
+               FROM database join tier_list using(tier_average)
+               WHERE (tier_average BETWEEN ? AND ?) order by date_and_time asc limit 20'''
+               ,[msg3_1,msg3_2]).fetchall()
+      embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
+      for i in range(len(result)):
+         embed1.add_field(name=str(i+1)+".", value=
+         f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2]}`平均レート`: {result[i][7]}\n'
+         f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
+         f'`連絡先`: <@{result[i][0]}>`post_ID`:{result[i][6]}'
+         , inline=False)
+      await message.channel.send(embed=embed1)
+
 
 #今日-1日のレコードより古いレコードを削除　一定間隔で実行するか、各コマンドが呼ばれたときに一緒に実行するか検討
 async def post_refresh():
