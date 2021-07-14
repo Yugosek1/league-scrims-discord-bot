@@ -102,7 +102,7 @@ async def post_delete(message):
          cur.execute('DELETE FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
          conn.commit()
          embed=discord.Embed(title="Success!", description=
-                             "登録日時:`"+post_nakami[2]+"`に登録された`"+post_message[0]+"`の投稿を削除しました", color=0x00ff01)
+                             "登録日時:`"+post_nakami[3]+"`に登録された`"+post_message[0]+"`の投稿を削除しました", color=0x00ff01)
          return await message.channel.send(embed=embed)
       else :
          embed=discord.Embed(title="Error!", description=
