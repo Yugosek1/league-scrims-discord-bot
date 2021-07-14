@@ -96,7 +96,7 @@ async def post_update(message):
    post_message = re.match(r'^!update (\d+) (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
    post_message = post_message.groups()
    if post_message:
-      cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]]).fetchone() 
+      cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
       post_nakami = cur.fetchone()
       if post_nakami:
          cur.execute('''UPDATE database SET
