@@ -85,7 +85,7 @@ async def post_add(message):
       id_of_new_row = cur.fetchone()[0]
       conn.commit()
       print(id_of_new_row)
-      embed=discord.Embed(title="Success!", description="投稿IDは`"+str(id)+"`です", color=0x00ff01)
+      embed=discord.Embed(title="Success!", description="投稿IDは`"+str(id_of_new_row)+"`です", color=0x00ff01)
       return await message.channel.send(embed=embed)
    else:
       embed=discord.Embed(title="Error!", description="引数の数が間違っている可能性があります", color=0xff0000)
