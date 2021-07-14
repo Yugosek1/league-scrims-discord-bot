@@ -25,6 +25,7 @@ conn = get_connection()
 conn.autocommit=True
 cur = conn.cursor()
 cur.execute('''CREATE TABLE IF NOT EXISTS database(
+            id SERIAL NOT NULL,
             user_id BIGINT,
             user_name VARCHAR(32),
             created_datetime TIMESTAMP,
@@ -78,12 +79,12 @@ async def post_add(message):
    post_message = re.match(r'^!post (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
    post_message = post_message.groups()
    if post_message:
-      cur.execute('insert into database(user_id, user_name, created_datetime, teamname, date_and_time, tier_average , matches, comments)values(%s, %s, %s, %s, %s, %s, %s, %s)',
+      id = cur.execute('insert into database(user_id, user_name, created_datetime, teamname, date_and_time, tier_average , matches, comments)values(%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id',
                   [message.author.id, message.author.name, message.created_at, post_message[0], post_message[1], post_message[2], post_message[3], post_message[4]])
       # on conflict (user_id,teamname) do update set created_datatime'
-      post_ctid = cur.lastrowid 
       conn.commit()
-      embed=discord.Embed(title="Success!", description="投稿IDは`"+str(post_ctid)+"`です", color=0x00ff01)
+      print(id)
+      embed=discord.Embed(title="Success!", description="投稿IDは`"+str(id)+"`です", color=0x00ff01)
       return await message.channel.send(embed=embed)
    else:
       embed=discord.Embed(title="Error!", description="引数の数が間違っている可能性があります", color=0xff0000)
@@ -92,10 +93,10 @@ async def post_add(message):
 async def post_delete(message):
    post_message = re.findall(r'^!delete +([0-9]+)$',message.content)
    if post_message:
-      post_nakami = cur.execute('SELECT * FROM database WHERE user_id=%s and ctid=%s',
+      post_nakami = cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',
                              [message.author.id, post_message[0]]).fetchone() 
       if post_nakami:
-         cur.execute('DELETE FROM database WHERE user_id=%s and ctid=%s',
+         cur.execute('DELETE FROM database WHERE user_id=%s and id=%s',
               [message.author.id, post_message[0]])
          conn.commit()
          embed=discord.Embed(title="Success!", description=
@@ -114,10 +115,10 @@ async def post_delete(message):
    if post_message:
       print(type(post_message))
       print(post_message)
-      post_nakami = cur.execute('SELECT * FROM database WHERE user_id= and ctid=%s',[message.author.id, post_message[0][0]]).fetchone() 
+      post_nakami = cur.execute('SELECT * FROM database WHERE user_id= and id=%s',[message.author.id, post_message[0][0]]).fetchone() 
 
       if post_nakami:
-         cur.execute('UPDATE database SET teamname=%s,date_and_time=%s,tier_average=%s,matches=%s,comments=%s WHERE user_id=%s and ctid=%s',[post_message[0][1],post_message[0][2],post_message[0][3],post_message[0][4],post_message[0][5],message.author.id, post_message[0][0]])
+         cur.execute('UPDATE database SET teamname=%s,date_and_time=%s,tier_average=%s,matches=%s,comments=%s WHERE user_id=%s and id=%s',[post_message[0][1],post_message[0][2],post_message[0][3],post_message[0][4],post_message[0][5],message.author.id, post_message[0][0]])
          conn.commit()
          embed=discord.Embed(title="Success!", description=post_message[0][0]+"の投稿を更新しました", color=0x00ff01)
          return await message.channel.send(embed=embed)
@@ -134,7 +135,7 @@ async def post_update(message):
    if post_message:
       # print(type(post_message))
       # print(post_message)
-      post_nakami = cur.execute('SELECT * FROM database WHERE user_id=%s and ctid=%s',[message.author.id, post_message[0]]).fetchone() 
+      post_nakami = cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]]).fetchone() 
 
       if post_nakami:
          cur.execute('''UPDATE database SET
@@ -143,7 +144,7 @@ async def post_update(message):
                   tier_average=%s,
                   matches=%s,
                   comments=%s
-                  WHERE user_id=%s and ctid=%s'''
+                  WHERE user_id=%s and id=%s'''
                   ,[post_message[1],post_message[2],post_message[3],post_message[4],post_message[5],message.author.id, post_message[0]])
          conn.commit()
          embed=discord.Embed(title="Success!", description=post_message[0]+"の投稿を更新しました", color=0x00ff01)
@@ -156,11 +157,11 @@ async def post_update(message):
       return await message.channel.send(embed=embed)
 
 async def post_list():
-   cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, database.ctid, tier
+   cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier
                      FROM database join tier_list using(tier_average) 
-                     order by database.ctid asc limit 10''')
+                     order by id asc limit 10''')
    mypost = cur.fetchall()
-   print(mypost)
+   # print(mypost)
    channel = client.get_channel(BOSYUCHANNEL_ID)
    if mypost:
       for i in range(len(mypost)):
@@ -193,10 +194,10 @@ async def post_list():
    print("post_list Done")
 
 async def edit_list():
-   # mypost = cur.execute('SELECT user_id, teamname, date_and_time, tier_average, matches, comments, ctid FROM database WHERE user_id =?',[message.author.id]).fetchall()
-   cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, database.ctid, tier
+   # mypost = cur.execute('SELECT user_id, teamname, date_and_time, tier_average, matches, comments, id FROM database WHERE user_id =?',[message.author.id]).fetchall()
+   cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier
                      FROM database join tier_list using(tier_average)
-                     order by database.ctid asc limit 20''')
+                     order by id asc limit 20''')
    mypost = cur.fetchall()
    channel = client.get_channel(854600745550741554)
    # メッセージの取得
@@ -218,8 +219,8 @@ async def edit_list():
 
 
 async def post_mylist(message):
-   # mypost = cur.execute('SELECT user_id, teamname, date_and_time, tier_average, matches, comments, ctid FROM database WHERE user_id =?',[message.author.id]).fetchall()
-   mypost = cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, database.ctid, tier 
+   # mypost = cur.execute('SELECT user_id, teamname, date_and_time, tier_average, matches, comments, id FROM database WHERE user_id =?',[message.author.id]).fetchall()
+   mypost = cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, database.id, tier 
                      FROM database join tier_list using(tier_average)
                      WHERE user_id =%s
                      order by date_and_time asc limit 10''',[message.author.id])
@@ -256,7 +257,7 @@ async def search_by_tier(message):
    msg2 = re.findall(r'^!search (\d) +(\d)$',message.content)
    msg3 = re.findall(r'^!search ([^ 　]+) +([^ 　]+)$',message.content)
    if msg1:
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.ctid, tier 
+      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average =%s or tier =%s)order by date_and_time asc limit 20'''
                ,[msg1[0],msg1[0]])
@@ -271,7 +272,7 @@ async def search_by_tier(message):
       await message.channel.send(embed=embed1)
    if msg2:
       print(msg2[0][0],msg2[0][1])
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.ctid, tier 
+      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average BETWEEN %s AND %s)order by date_and_time asc limit 20'''
                ,[msg2[0][0],msg2[0][1]])
@@ -290,7 +291,7 @@ async def search_by_tier(message):
       msg3_1 = tier[msg3_1]
       msg3_2 = tier[msg3_2]
       print(msg3_1,msg3_2)
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.ctid, tier 
+      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20'''
                ,[msg3_1,msg3_2]).fetchall()
