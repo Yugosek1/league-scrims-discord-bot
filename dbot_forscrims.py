@@ -121,6 +121,7 @@ async def edit_list():
                      FROM database join tier_list using(tier_average)
                      order by id asc limit 20''')
    mypost = cur.fetchall()
+   print(BOSYUCHANNEL_ID)
    channel = client.get_channel(BOSYUCHANNEL_ID)
    # メッセージの取得:常に更新するメッセージの固有ID(ex. 854610120680275988)
    edit_message = await channel.fetch_message(854610120680275988)
