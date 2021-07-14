@@ -94,8 +94,7 @@ async def post_add(message):
 async def post_delete(message):
    post_message = re.findall(r'^!delete +([0-9]+)$',message.content)
    if post_message:
-      post_nakami = cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',
-                             [message.author.id, post_message[0]])
+      post_nakami = cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
       if post_nakami:
          cur.execute('DELETE FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
          conn.commit()
@@ -220,7 +219,7 @@ async def edit_list():
 
 async def post_mylist(message):
    # mypost = cur.execute('SELECT user_id, teamname, date_and_time, tier_average, matches, comments, id FROM database WHERE user_id =?',[message.author.id]).fetchall()
-   mypost = cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, database.id, tier 
+   mypost = cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
                      FROM database join tier_list using(tier_average)
                      WHERE user_id =%s
                      order by date_and_time asc limit 10''',[message.author.id])
@@ -257,7 +256,7 @@ async def search_by_tier(message):
    msg2 = re.findall(r'^!search (\d) +(\d)$',message.content)
    msg3 = re.findall(r'^!search ([^ 　]+) +([^ 　]+)$',message.content)
    if msg1:
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.id, tier 
+      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average =%s or tier =%s)order by date_and_time asc limit 20'''
                ,[msg1[0],msg1[0]])
@@ -272,7 +271,7 @@ async def search_by_tier(message):
       await message.channel.send(embed=embed1)
    if msg2:
       print(msg2[0][0],msg2[0][1])
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.id, tier 
+      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average BETWEEN %s AND %s)order by date_and_time asc limit 20'''
                ,[msg2[0][0],msg2[0][1]])
@@ -291,7 +290,7 @@ async def search_by_tier(message):
       msg3_1 = tier[msg3_1]
       msg3_2 = tier[msg3_2]
       print(msg3_1,msg3_2)
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, database.id, tier 
+      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20'''
                ,[msg3_1,msg3_2]).fetchall()
