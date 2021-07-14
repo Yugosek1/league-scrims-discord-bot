@@ -56,8 +56,7 @@ async def on_message(message):
 
 
 async def post_add(message):
-   post_message = re.match(r'^!post (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
-   post_message = post_message.groups()
+   post_message = re.findall(r'^!post (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
    if post_message:
       cur.execute('insert into database(user_id, user_name, created_datetime, teamname, date_and_time, tier_average , matches, comments)values(%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id',
                   [message.author.id, message.author.name, message.created_at, post_message[0], post_message[1], post_message[2], post_message[3], post_message[4]])
@@ -93,8 +92,7 @@ async def post_delete(message):
 
 
 async def post_update(message):
-   post_message = re.match(r'^!update (\d+) (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
-   post_message = post_message.groups()
+   post_message = re.findall(r'^!update (\d+) (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
    if post_message:
       cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
       post_nakami = cur.fetchone()
