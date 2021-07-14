@@ -79,11 +79,12 @@ async def post_add(message):
    post_message = re.match(r'^!post (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
    post_message = post_message.groups()
    if post_message:
-      id = cur.execute('insert into database(user_id, user_name, created_datetime, teamname, date_and_time, tier_average , matches, comments)values(%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id',
+      cur.execute('insert into database(user_id, user_name, created_datetime, teamname, date_and_time, tier_average , matches, comments)values(%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id',
                   [message.author.id, message.author.name, message.created_at, post_message[0], post_message[1], post_message[2], post_message[3], post_message[4]])
       # on conflict (user_id,teamname) do update set created_datatime'
+      id_of_new_row = cur.fetchone()[0]
       conn.commit()
-      print(id)
+      print(id_of_new_row)
       embed=discord.Embed(title="Success!", description="投稿IDは`"+str(id)+"`です", color=0x00ff01)
       return await message.channel.send(embed=embed)
    else:
