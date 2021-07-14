@@ -57,10 +57,9 @@ async def on_message(message):
 
 async def post_add(message):
    post_message = re.findall(r'^!post (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
-   print(post_message[0],post_message[1],post_message[2],post_message[3],post_message[4])
    if post_message:
       cur.execute('insert into database(user_id, user_name, created_datetime, teamname, date_and_time, tier_average , matches, comments)values(%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id',
-                  [message.author.id, message.author.name, message.created_at, post_message[0], post_message[1], post_message[2], post_message[3], post_message[4]])
+                  [message.author.id, message.author.name, message.created_at, post_message[0][0], post_message[0][1], post_message[0][2], post_message[0][3], post_message[0][4]])
       id_of_new_row = cur.fetchone()[0]
       conn.commit()
       print(id_of_new_row)
@@ -105,7 +104,7 @@ async def post_update(message):
                   matches=%s,
                   comments=%s
                   WHERE user_id=%s and id=%s'''
-                  ,[post_message[1],post_message[2],post_message[3],post_message[4],post_message[5],message.author.id, post_message[0]])
+                  ,[post_message[0][1],post_message[0][2],post_message[0][3],post_message[0][4],post_message[0][5],message.author.id, post_message[0][0]])
          conn.commit()
          embed=discord.Embed(title="Success!", description=post_message[0]+"の投稿を更新しました", color=0x00ff01)
          return await message.channel.send(embed=embed)
