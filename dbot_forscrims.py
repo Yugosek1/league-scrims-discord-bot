@@ -94,8 +94,9 @@ async def post_add(message):
 async def post_delete(message):
    post_message = re.findall(r'^!delete +([0-9]+)$',message.content)
    if post_message:
-      post_nakami = cur.execute('SELECT * FROM database WHERE user_id= (%s) and id= (%s)',[message.author.id, post_message[0]])
+      post_nakami = cur.execute('SELECT * FROM database WHERE user_id= %s and id= %s',[message.author.id, post_message[0]])
       print(post_nakami)
+      print(post_message[0])
       if post_nakami:
          cur.execute('DELETE FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
          conn.commit()
