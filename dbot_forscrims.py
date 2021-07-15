@@ -144,7 +144,7 @@ async def post_mylist(message):
    cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
                      FROM database join tier_list using(tier_average)
                      WHERE user_id =%s
-                     order by date_and_time asc limit 10''',[message.author.id])
+                     order by date_and_time asc limit 20''',[message.author.id])
    mypost = cur.fetchall()
 
    if mypost:
@@ -153,7 +153,7 @@ async def post_mylist(message):
          embed1.add_field(name=str(i+1)+".", value=
          f'''`チーム名`: {mypost[i][1]}\n`対戦開始日時`: {mypost[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {mypost[i][7]}\n'''
          f'''`試合数`: {mypost[i][4]}`コメント`: {mypost[i][5]}\n'''
-         f'''`連絡先`: <@{mypost[i][0]}>`post_ID`:{mypost[i][6]}'''
+         f'''`連絡先`: <@{mypost[i][0]}>`          投稿ID`:{mypost[i][6]}'''
          , inline=False)
       await message.channel.send(embed=embed1)
 
