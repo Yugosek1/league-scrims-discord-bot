@@ -153,7 +153,7 @@ async def post_mylist(message):
          embed1.add_field(name=str(i+1)+".", value=
          f'''`チーム名`: {mypost[i][1]}\n`対戦開始日時`: {mypost[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {mypost[i][7]}\n'''
          f'''`試合数`: {mypost[i][4]}`コメント`: {mypost[i][5]}\n'''
-         f'''`連絡先`: <@{mypost[i][0]}>`          投稿ID`:{mypost[i][6]}'''
+         f'''`連絡先`: <@{mypost[i][0]}>`投稿ID`: {mypost[i][6]}'''
          , inline=False)
       await message.channel.send(embed=embed1)
 
@@ -177,7 +177,7 @@ async def search_by_tier(message):
          embed1.add_field(name=str(i+1)+".", value=
          f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2]}`平均レート`: {result[i][7]}\n'
          f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
-         f'`連絡先`: <@{result[i][0]}>`post_ID`:{result[i][6]}'
+         f'`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'
          , inline=False)
       await message.channel.send(embed=embed1)
    if msg2:
@@ -192,7 +192,7 @@ async def search_by_tier(message):
          embed1.add_field(name=str(i+1)+".", value=
          f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2]}`平均レート`: {result[i][7]}\n'
          f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
-         f'`連絡先`: <@{result[i][0]}>`post_ID`:{result[i][6]}'
+         f'`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'
          , inline=False)
       await message.channel.send(embed=embed1)
    if msg3:
@@ -210,7 +210,7 @@ async def search_by_tier(message):
          embed1.add_field(name=str(i+1)+".", value=
          f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2]}`平均レート`: {result[i][7]}\n'
          f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
-         f'`連絡先`: <@{result[i][0]}>`post_ID`:{result[i][6]}'
+         f'`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'
          , inline=False)
       await message.channel.send(embed=embed1)
 
