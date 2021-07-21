@@ -80,7 +80,7 @@ async def post_delete(message):
          cur.execute('DELETE FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
          conn.commit()
          embed=discord.Embed(title="Success!", description=
-                             "登録日時:`"+post_nakami[3]+"`に登録された`"+post_message[0]+"`の投稿を削除しました", color=0x00ff01)
+                             "登録日時:`"+strftime(post_nakami[3])+"`に登録された`"+post_message[0]+"`の投稿を削除しました", color=0x00ff01)
          return await message.channel.send(embed=embed)
       else :
          embed=discord.Embed(title="Error!", description=
@@ -136,8 +136,11 @@ async def edit_list():
       await edit_message.edit(content=None, embed=embed1)
 
    else:
+      channel = client.get_channel(BOSYUCHANNEL_ID)
+   # メッセージの取得:常に更新するメッセージの固有ID(ex. 854610120680275988)
+      edit_message = await channel.fetch_message(854610120680275988)
       embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
-      return await channel.send(embed=embed)
+      return await edit_message.edit(content=None, embed=embed)
    print("edit_list Done")
 
 async def post_mylist(message):
