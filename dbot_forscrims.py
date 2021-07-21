@@ -92,7 +92,7 @@ async def post_delete(message):
 
 
 async def post_update(message):
-   post_message = re.findall(r'^!update (\d+) (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
+   post_message = re.findall(r'^!update (\d+) (.+),(\d{4}-\d{2}-\d{2} \d{2}:\d{2}),(\d),(.+),(.+)$',message.content)
    if post_message:
       cur.execute('SELECT * FROM database WHERE user_id=%s and id=%s',[message.author.id, post_message[0]])
       post_nakami = cur.fetchone()
