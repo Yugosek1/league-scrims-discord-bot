@@ -106,10 +106,10 @@ async def post_update(message):
                   WHERE user_id=%s and id=%s'''
                   ,[post_message[0][1],post_message[0][2],post_message[0][3],post_message[0][4],post_message[0][5],message.author.id, post_message[0][0]])
          conn.commit()
-         embed=discord.Embed(title="Success!", description=post_message[0]+"の投稿を更新しました", color=0x00ff01)
+         embed=discord.Embed(title="Success!", description=post_message[0][0]+"の投稿を更新しました", color=0x00ff01)
          return await message.channel.send(embed=embed)
       else:
-         embed=discord.Embed(title="Error!", description="`"+post_message[0]+"`は登録されていません。また更新は登録したユーザーのみ可能です", color=0xff0000)
+         embed=discord.Embed(title="Error!", description="`"+post_message[0][0]+"`は登録されていません。また更新は登録したユーザーのみ可能です", color=0xff0000)
          return await message.channel.send(embed=embed)
    else:
       embed=discord.Embed(title="Error!", description="形式が違います`!update [post_ID]`", color=0xff0000)
@@ -170,7 +170,7 @@ async def search_by_tier(message):
       result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average =%s or tier =%s)order by date_and_time asc limit 20'''
-               ,[msg1[0],msg1[0]])
+               ,[msg1[0][0],msg1[0][0]])
       result = cur.fetchall()
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
