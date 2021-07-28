@@ -106,7 +106,7 @@ async def post_update(message):
                   WHERE user_id=%s and id=%s'''
                   ,[post_message[0][1],post_message[0][2],post_message[0][3],post_message[0][4],post_message[0][5],message.author.id, post_message[0][0]])
          conn.commit()
-         embed=discord.Embed(title="Success!", description=post_message[0][0]+"の投稿を更新しました", color=0x00ff01)
+         embed=discord.Embed(title="Success!", description="`"+post_message[0][0]+"`の投稿を更新しました", color=0x00ff01)
          return await message.channel.send(embed=embed)
       else:
          embed=discord.Embed(title="Error!", description="`"+post_message[0][0]+"`は登録されていません。また更新は登録したユーザーのみ可能です", color=0xff0000)
