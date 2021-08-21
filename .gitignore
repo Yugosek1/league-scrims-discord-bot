@@ -134,3 +134,5 @@ settings.json
 
 #localのDB残骸(sqlite3)
 db2.db
+
+.DS_Store
