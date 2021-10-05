@@ -220,7 +220,7 @@ async def search_by_tier(message):
 
 #今日-1日のレコードより古いレコードを削除　一定間隔で実行するか、各コマンドが呼ばれたときに一緒に実行するか検討
 async def post_refresh():
-   cur.execute('DELETE from database WHERE date_and_time <= CURRENT_TIMESTAMP - interval '1 day';')
+   cur.execute("DELETE from database WHERE date_and_time <= CURRENT_TIMESTAMP - interval '1 day';")
    conn.commit()
    print('post_refresh Done')
 
