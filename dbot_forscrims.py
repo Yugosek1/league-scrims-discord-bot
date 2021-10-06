@@ -170,7 +170,7 @@ async def search_by_tier(message):
    msg2 = re.findall(r'^!search (\d) +(\d)$',message.content)
    msg3 = re.findall(r'^!search ([^ 　]+) +([^ 　]+)$',message.content)
    if msg1:
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
+      cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average =%s or tier =%s)order by date_and_time asc limit 20'''
                ,[msg1[0][0],msg1[0][0]])
@@ -185,7 +185,7 @@ async def search_by_tier(message):
       await message.channel.send(embed=embed1)
    if msg2:
       print(msg2[0][0],msg2[0][1])
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
+      cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average BETWEEN %s AND %s)order by date_and_time asc limit 20'''
                ,[msg2[0][0],msg2[0][1]])
@@ -204,7 +204,7 @@ async def search_by_tier(message):
       msg3_1 = tier[msg3_1]
       msg3_2 = tier[msg3_2]
       print(msg3_1,msg3_2)
-      result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
+      cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
                WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20'''
                ,[msg3_1,msg3_2]).fetchall()
