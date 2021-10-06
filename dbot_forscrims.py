@@ -177,9 +177,9 @@ async def search_by_tier(message):
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
          embed1.add_field(name=str(i+1)+".", value=
-         f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'
-         f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
-         f'`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'
+         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
+         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
          , inline=False)
       await message.channel.send(embed=embed1)
    if msg2:
@@ -193,9 +193,9 @@ async def search_by_tier(message):
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
          embed1.add_field(name=str(i+1)+".", value=
-         f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'
-         f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
-         f'`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'
+         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
+         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
          , inline=False)
       await message.channel.send(embed=embed1)
    if msg3:
@@ -211,9 +211,9 @@ async def search_by_tier(message):
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
          embed1.add_field(name=str(i+1)+".", value=
-         f'`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2]}`平均レート`: {result[i][7]}\n'
-         f'`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'
-         f'`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'
+         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2]}`平均レート`: {result[i][7]}\n'''
+         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
          , inline=False)
       await message.channel.send(embed=embed1)
 
