@@ -166,9 +166,12 @@ async def post_mylist(message):
 
 
 async def search_by_tier(message):
+   # !search 1
    msg1 = re.findall(r'^!search ([^ 　]+)$',message.content)
+   # !search 1 4
    msg2 = re.findall(r'^!search (\d) +(\d)$',message.content)
-   msg3 = re.findall(r'^!search ([^ 　]+) +([^ 　]+)$',message.content)
+   # !search アイアン プラチナ
+   msg3 = re.findall(r'^!search ([\D 　]+) +([\D 　]+)$',message.content)
    if msg1:
       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
                   FROM database join tier_list using(tier_average) WHERE (tier_average =%s or tier =%s)
