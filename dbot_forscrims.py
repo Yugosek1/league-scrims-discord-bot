@@ -182,7 +182,8 @@ async def search_by_tier(message):
          , inline=False)
       await message.channel.send(embed=embed1)
    if msg2:
-      print(msg2[0][0],msg2[0][1])
+      print(msg2[0][0])
+      print(msg2[0][1])
       cur.execute('SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier FROM database join tier_list using(tier_average) WHERE (tier_average BETWEEN %s AND %s)order by date_and_time asc limit 20',
                   [msg2[0][0],msg2[0][1]])
       result = cur.fetchall()
