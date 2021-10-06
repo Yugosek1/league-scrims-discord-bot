@@ -169,6 +169,10 @@ async def search_by_tier(message):
    msg1 = re.findall(r'^!search ([^ 　]+)$',message.content)
    msg2 = re.findall(r'^!search (\d) +(\d)$',message.content)
    msg3 = re.findall(r'^!search ([^ 　]+) +([^ 　]+)$',message.content)
+   try:
+      print(msg1)
+      print(msg2)
+      print(msg3)
    if msg1:
       result = cur.execute('''SELECT user_id, teamname, strftime("%m月%d日 %H時%M分",date_and_time), tier_average, matches, comments, id, tier 
                FROM database join tier_list using(tier_average)
