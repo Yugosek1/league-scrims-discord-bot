@@ -166,8 +166,8 @@ async def post_mylist(message):
 
 
 async def search_by_tier(message):
-   # !search 1 or !search ゴールド
-   msg1 = re.findall(r'^!search (\d)$',message.content)
+   # !search 1
+   msg1 = re.findall(r'^!search ([\d+][^ 　]+)$',message.content)
    # !search ゴールド
    msg2 = re.findall(r'^!search ([\D+][^ 　]+)$',message.content)
    # !search 1 4
@@ -179,14 +179,19 @@ async def search_by_tier(message):
                   FROM database join tier_list using(tier_average) WHERE (tier_average =%s or tier =%s)
                   order by date_and_time asc limit 20''',[msg1[0][0],msg1[0][0]])
       result = cur.fetchall()
-      embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
-      for i in range(len(result)):
-         embed1.add_field(name=str(i+1)+".", value=
-         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
-         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
-         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
-         , inline=False)
-      await message.channel.send(embed=embed1)
+      if result:
+         embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
+         for i in range(len(result)):
+            embed1.add_field(name=str(i+1)+".", value=
+            f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
+            f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+            f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
+            , inline=False)
+         await message.channel.send(embed=embed1)
+      else:
+         embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
+         return await message.channel.send(embed=embed)
+
    if msg2:
       print(msg2[0])
       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
