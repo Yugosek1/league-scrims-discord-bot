@@ -198,14 +198,19 @@ async def search_by_tier(message):
                   FROM database join tier_list using(tier_average) WHERE (tier =%s)
                   order by date_and_time asc limit 20''',[msg2[0],])
       result = cur.fetchall()
-      embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
-      for i in range(len(result)):
-         embed1.add_field(name=str(i+1)+".", value=
-         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
-         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
-         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
-         , inline=False)
-      await message.channel.send(embed=embed1)
+      if result:
+         embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
+         for i in range(len(result)):
+            embed1.add_field(name=str(i+1)+".", value=
+            f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
+            f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+            f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
+            , inline=False)
+         await message.channel.send(embed=embed1)
+      else:
+         embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
+         return await message.channel.send(embed=embed)
+
    if msg3:
       print(msg3[0][0])
       print(msg3[0][1])
@@ -214,14 +219,19 @@ async def search_by_tier(message):
                   order by date_and_time asc limit 20''',
                   [msg3[0][0],msg3[0][1]])
       result = cur.fetchall()
-      embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
-      for i in range(len(result)):
-         embed1.add_field(name=str(i+1)+".", value=
-         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
-         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
-         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
-         , inline=False)
-      await message.channel.send(embed=embed1)
+      if result:
+         embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
+         for i in range(len(result)):
+            embed1.add_field(name=str(i+1)+".", value=
+            f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
+            f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+            f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
+            , inline=False)
+         await message.channel.send(embed=embed1)
+      else:
+         embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
+         return await message.channel.send(embed=embed)
+
    if msg4:
       msg4_1 = str(msg4[0][0])
       msg4_2 = str(msg4[0][1])
@@ -232,14 +242,18 @@ async def search_by_tier(message):
                   FROM database join tier_list using(tier_average)
                   WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[msg4_1,msg4_2])
       result = cur.fetchall()
-      embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
-      for i in range(len(result)):
-         embed1.add_field(name=str(i+1)+".", value=
-         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
-         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
-         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
-         , inline=False)
-      await message.channel.send(embed=embed1)
+      if result:
+         embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
+         for i in range(len(result)):
+            embed1.add_field(name=str(i+1)+".", value=
+            f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
+            f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+            f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
+            , inline=False)
+         await message.channel.send(embed=embed1)
+      else:
+         embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
+         return await message.channel.send(embed=embed)
 
 
 #今日-1日のレコードより古いレコードを削除　一定間隔で実行するか、各コマンドが呼ばれたときに一緒に実行するか検討
