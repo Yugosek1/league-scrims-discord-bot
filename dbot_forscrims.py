@@ -189,10 +189,9 @@ async def search_by_tier(message):
       await message.channel.send(embed=embed1)
    if msg2:
       print(msg2[0][0])
-      print(msg2[0][1])
       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
                   FROM database join tier_list using(tier_average) WHERE (tier = '%s')
-                  order by date_and_time asc limit 20''',[msg1[0][0],])
+                  order by date_and_time asc limit 20''',[msg2[0][0],])
       result = cur.fetchall()
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
