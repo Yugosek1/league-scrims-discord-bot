@@ -169,7 +169,7 @@ async def search_by_tier(message):
    # !search 1 or !search ゴールド
    msg1 = re.findall(r'^!search (\d)$',message.content)
    # !search ゴールド
-   msg2 = re.findall(r'^!search ([\D+] [^ 　]+)$',message.content)
+   msg2 = re.findall(r'^!search ([\D+][^ 　]+)$',message.content)
    # !search 1 4
    msg3 = re.findall(r'^!search (\d) +(\d)$',message.content)
    # !search アイアン プラチナ
