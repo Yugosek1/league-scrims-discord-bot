@@ -233,14 +233,14 @@ async def search_by_tier(message):
          return await message.channel.send(embed=embed)
 
    if msg4:
-      msg4_1 = str(msg4[0][0])
-      msg4_2 = str(msg4[0][1])
-      msg4_1 = tier[msg4_1]
-      msg4_2 = tier[msg4_2]
-      print(msg4_1,msg4_2)
+      # msg4_1 = str(msg4[0][0])
+      # msg4_2 = str(msg4[0][1])
+      # msg4_1 = tier[msg4_1]
+      # msg4_2 = tier[msg4_2]
+      # print(msg4_1,msg4_2)
       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
                   FROM database join tier_list using(tier_average)
-                  WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[msg4_1,msg4_2])
+                  WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[tier[msg4[0][0]],tier[msg4[0][1]]])
       result = cur.fetchall()
       if result:
          embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
