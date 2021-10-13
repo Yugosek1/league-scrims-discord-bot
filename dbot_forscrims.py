@@ -166,12 +166,14 @@ async def post_mylist(message):
 
 
 async def search_by_tier(message):
-   # !search 1
-   msg1 = re.findall(r'^!search ([^ 　]+)$',message.content)
+   # !search 1 or !search ゴールド
+   msg1 = re.findall(r'^!search (\d)$',message.content)
+   # !search ゴールド
+   msg2 = re.findall(r'^!search ([\D+][^ 　]+)$')
    # !search 1 4
-   msg2 = re.findall(r'^!search (\d) +(\d)$',message.content)
+   msg3 = re.findall(r'^!search (\d) +(\d)$',message.content)
    # !search アイアン プラチナ
-   msg3 = re.findall(r'^!search ([\D 　]+) +([\D 　]+)$',message.content)
+   msg4 = re.findall(r'^!search ([\D 　]+) +([\D 　]+)$',message.content)
    if msg1:
       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
                   FROM database join tier_list using(tier_average) WHERE (tier_average =%s or tier =%s)
@@ -186,12 +188,9 @@ async def search_by_tier(message):
          , inline=False)
       await message.channel.send(embed=embed1)
    if msg2:
-      print(msg2[0][0])
-      print(msg2[0][1])
       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
-                  FROM database join tier_list using(tier_average) WHERE (tier_average BETWEEN %s AND %s)
-                  order by date_and_time asc limit 20''',
-                  [msg2[0][0],msg2[0][1]])
+                  FROM database join tier_list using(tier_average) WHERE (tier ='%s')
+                  order by date_and_time asc limit 20''',[msg1[0][0]])
       result = cur.fetchall()
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
@@ -202,14 +201,30 @@ async def search_by_tier(message):
          , inline=False)
       await message.channel.send(embed=embed1)
    if msg3:
-      msg3_1 = str(msg3[0][0])
-      msg3_2 = str(msg3[0][1])
-      msg3_1 = tier[msg3_1]
-      msg3_2 = tier[msg3_2]
-      print(msg3_1,msg3_2)
+      print(msg3[0][0])
+      print(msg3[0][1])
+      cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
+                  FROM database join tier_list using(tier_average) WHERE (tier_average BETWEEN %s AND %s)
+                  order by date_and_time asc limit 20''',
+                  [msg3[0][0],msg3[0][1]])
+      result = cur.fetchall()
+      embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
+      for i in range(len(result)):
+         embed1.add_field(name=str(i+1)+".", value=
+         f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
+         f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
+         f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
+         , inline=False)
+      await message.channel.send(embed=embed1)
+   if msg4:
+      msg4_1 = str(msg4[0][0])
+      msg4_2 = str(msg4[0][1])
+      msg4_1 = tier[msg4_1]
+      msg4_2 = tier[msg4_2]
+      print(msg4_1,msg4_2)
       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
                   FROM database join tier_list using(tier_average)
-                  WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[msg3_1,msg3_2])
+                  WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[msg4_1,msg4_2])
       result = cur.fetchall()
       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
       for i in range(len(result)):
