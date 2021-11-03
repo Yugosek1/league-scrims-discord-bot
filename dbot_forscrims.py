@@ -232,30 +232,12 @@ async def search_by_tier(message):
          embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
          return await message.channel.send(embed=embed)
 
-   # if msg4:
-   #    if msg4[0][0] in tier and msg4[0][1] in tier:
-   #       cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
-   #                   FROM database join tier_list using(tier_average)
-   #                   WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[tier[msg4[0][0]],tier[msg4[0][1]]])
-   #       result = cur.fetchall()
-   #       embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
-   #       for i in range(len(result)):
-   #          embed1.add_field(name=str(i+1)+".", value=
-   #          f'''`チーム名`: {result[i][1]}\n`対戦開始日時`: {result[i][2].strftime('%m月%d日 %H時%M分')}`平均レート`: {result[i][7]}\n'''
-   #          f'''`試合数`: {result[i][4]}`コメント`: {result[i][5]}\n'''
-   #          f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
-   #          , inline=False)
-   #       await message.channel.send(embed=embed1)
-   #    else:
-   #       embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
-   #       return await message.channel.send(embed=embed)
-
    if msg4:
-      cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
-                  FROM database join tier_list using(tier_average)
-                  WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[tier[msg4[0][0]],tier[msg4[0][1]]])
-      result = cur.fetchall()
-      if result:
+      if msg4[0][0] in tier and msg4[0][1] in tier:
+         cur.execute('''SELECT user_id, teamname, date_trunc('minute',date_and_time), tier_average, matches, comments, id, tier 
+                     FROM database join tier_list using(tier_average)
+                     WHERE (tier_average BETWEEN %s AND %s) order by date_and_time asc limit 20''',[tier[msg4[0][0]],tier[msg4[0][1]]])
+         result = cur.fetchall()
          embed1=discord.Embed(title="対戦募集一覧", color=0x668cff)
          for i in range(len(result)):
             embed1.add_field(name=str(i+1)+".", value=
@@ -264,9 +246,10 @@ async def search_by_tier(message):
             f'''`連絡先`: <@{result[i][0]}>`投稿ID`:{result[i][6]}'''
             , inline=False)
          await message.channel.send(embed=embed1)
-   else:
-      embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
-      return await message.channel.send(embed=embed)
+      else:
+         embed=discord.Embed(title="Error!", description="登録が見つかりませんでした", color=0xff0000)
+         return await message.channel.send(embed=embed)
+
 
 #今日-1日のレコードより古いレコードを削除　一定間隔で実行するか、各コマンドが呼ばれたときに一緒に実行するか検討
 async def post_refresh():
